@@ -1,18 +1,8 @@
-import json
-from http import HTTPStatus
-
-from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed
-from django.shortcuts import get_object_or_404
-from django.urls import reverse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.views import APIView
-
 from blog.api.serializers import PostSerializer
-from rest_framework.response import Response
 from blog.models import Post
 from rest_framework import generics
-
-from rest_framework.decorators import api_view
+from rest_framework.authentication import SessionAuthentication
+from blog.api.permissions import AuthorModifyOrReadOnly, IsAdminUserForObject
 
 
 # def post_to_dict(post):
@@ -48,11 +38,9 @@ from rest_framework.decorators import api_view
 #     return HttpResponseNotAllowed(["GET", "POST"])
 
 class PostList(generics.ListCreateAPIView):
+    authentication_classes = [SessionAuthentication]
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-
-
-
 
 
 # @csrf_exempt
@@ -102,5 +90,7 @@ class PostList(generics.ListCreateAPIView):
 #         return Response(status=HTTPStatus.NO_CONTENT)
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [AuthorModifyOrReadOnly | IsAdminUserForObject]
     queryset = Post.objects.all()
     serializer_class = PostSerializer
