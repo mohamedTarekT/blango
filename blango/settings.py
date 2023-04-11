@@ -48,7 +48,8 @@ class Dev(Configuration):
         'django.contrib.messages',
         'django.contrib.staticfiles',
         'blog',
-        'debug_toolbar'
+        'debug_toolbar',
+        'rest_framework',
     ]
 
     MIDDLEWARE = [
